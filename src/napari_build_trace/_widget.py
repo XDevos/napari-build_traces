@@ -38,7 +38,8 @@ from magicgui import magic_factory
 from magicgui.widgets import FunctionGui
 import numpy as np
 import scipy.optimize as spo
-
+from napari import Viewer
+import napari
 if TYPE_CHECKING:
     import napari
 
@@ -97,10 +98,10 @@ def do_build_trace(
         param = json.load(f)
 
     # update the parameters
-    param["common"]["acquisition"]["pixel_size_xy"] = pixel_size_xy    
-    param["common"]["acquisition"]["pixel_size_z"] = pixel_size_z
+    param["common"]["acquisition"]["pixelSizeXY"] = pixel_size_xy    
+    param["common"]["acquisition"]["pixelSizeZ"] = pixel_size_z
     param["common"]["acquisition"]["zBinning"] = z_binning
-    param["common"]["buildsPWDmatrix"]["tracing_method"] = list(method)
+    param["common"]["buildsPWDmatrix"]["tracing_method"] = [method]
     param["common"]["buildsPWDmatrix"]["KDtree_distance_threshold_mum"] = kdtree_distance_threshold    
 
     
@@ -111,12 +112,14 @@ def do_build_trace(
     ref_files = ref_file.split(",") if ref_file else []
 
     # MODULE EXECUTION
-    mod.load_reference_data(ref_files)
+    # mod.load_reference_data(ref_files)
+    print("localization_path", localization_path)
     input_data = mod.load_data(localization_path, None)
+    print("input_data", input_data)
     output_data = mod.run(input_data)
     mod.save_data(output_data, output_folder, localization_path)
-    #############################################################################################
-    #############################################################################################
+    
+    png_path = os.path.join(output_folder, "tracing/Trace_3D_barcode_KDtree_ROI-5.ecsv_traces_XYZ_ROI5.png")
 
     # if save:
     #     data_to_print = {"operationTODO": operationTODO, "image": layer0_name}
@@ -124,4 +127,11 @@ def do_build_trace(
     #         json.dump(data_to_print, outfile)
     #     print("Configuration save as json file")
 
+    # # Create a new Viewer object
+    # viewer = Viewer()
+
+    # Load the image
+    image = plt.imread(png_path)
+    # viewer.add_image(image)
+    napari.view_image(image) 
     return
