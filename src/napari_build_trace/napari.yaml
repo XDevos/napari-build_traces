@@ -1,0 +1,17 @@
+name: napari-build_trace
+display_name: pyHiM
+contributions:
+  commands:
+    - id: napari-build_trace.make_sample_data
+      python_name: napari_build_trace._sample_data:make_sample_data
+      title: Load sample data from pyHiM
+    - id: napari-build_trace.do_build_trace
+      python_name: napari_build_trace._widget:do_build_trace
+      title: Make projection from pyHiM
+  sample_data:
+    - command: napari-build_trace.make_sample_data
+      display_name: pyHiM
+      key: unique_id.1
+  widgets:
+    - command: napari-build_trace.do_build_trace
+      display_name: pyHiM build_trace
